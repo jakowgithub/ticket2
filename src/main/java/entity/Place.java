@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
+@Entity(name="place")
 @Table()
 public class Place {
 
@@ -17,35 +17,35 @@ public class Place {
         @GeneratedValue(generator = "increment")
         private long idPlace;
 
-        @Column(nullable = false, unique = false, length = 10)
+        @Column(nullable = false,  length = 10)
         @Basic
         private int numberPlace;
 
-        @Column(nullable = false, unique = false, length = 10)
+        @Column(nullable = false,  length = 10)
         @Basic
         private int numberTrain;
 
-        @Column(nullable = false, unique = false, length = 10)
+        @Column(nullable = false,  length = 10)
         @Basic
         private int numberCar;
 
-        @Column(nullable = false, unique = false)
+        @Column(nullable = false)
         @Basic
         private boolean isReal;
 
-        @Column(nullable = false, unique = false, length = 10)
+        @Column(nullable = false,  length = 10)
         @Basic
         private String typeCarPlace;
 
-        @Column(nullable = true, unique = false, length = 40)
+        @Column(length = 40)
         @Basic
         private String remarkPlace;
 
-        @Column(nullable = false, unique = false, length = 10)
+        @Column(nullable = false, length = 10)
         @Basic
         private int pricePlace;
 
-        public Place (){};
+        public Place (){}
 
         public Place ( int numberPlace,
                        int numberCar,

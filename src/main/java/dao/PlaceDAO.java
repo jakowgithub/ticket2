@@ -30,7 +30,16 @@ public class PlaceDAO {
     public List<Place> getAllPlaces(){
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
-        List<Place> places = entityManager.createQuery("from Place", Place.class).getResultList();
+        List<Place> places = entityManager.createQuery("select p from place p where p.idPlace<100" , Place.class).setMaxResults(100).getResultList();
+
+//          EXAMPL
+//        public List findWithName(String name) {
+//            return em.createQuery(
+//                    "SELECT c FROM Customer c WHERE c.name LIKE :custName")
+//                    .setParameter("custName", name)
+//                    .setMaxResults(10)
+//                    .getResultList();
+//        }
 
         entityManager.close();
         return places;

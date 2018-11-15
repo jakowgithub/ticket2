@@ -1,47 +1,31 @@
 package entity;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
 import java.time.LocalDateTime;
 
-@DatabaseTable(tableName = "route")
 public class Route {
 
-        @DatabaseField(generatedId = true)
         private int idRoute;
 
-        @DatabaseField()
         private String nameRoute;
 
-        @DatabaseField()
         private String station0;
 
-        @DatabaseField()
         private String station1;
 
-        @DatabaseField()
         private String station2;
 
-        @DatabaseField()
         private LocalDateTime arrivalStation0;
         //LocalDateTime dateTime=LocalDateTime.now();
         //LocalDateTime specificDate = LocalDateTime.of(2014, Month.JANUARY, 1, 10, 10, 30);
 
-        @DatabaseField()
         private LocalDateTime arrivalStation1;
 
-        @DatabaseField()
         private LocalDateTime arrivalStation2;
 
-
-        @DatabaseField()
         private int numberTrainRout;
 
-        @DatabaseField()
         private String remarkRoute;
 
-        @DatabaseField()
         private int[][] fareStation = new int[5][5];
 
         //fare from Station0 to StationJ 0, 5,10,15,20
@@ -50,7 +34,7 @@ public class Route {
         //fare from Station3 to StationJ 15,10,5, 0, 5
         //fare from Station4 to StationJ 20,15,10, 5,0
 
-        Route() { };
+        public Route() { }
 
         public Route(String nameRoute,
                      String station0,

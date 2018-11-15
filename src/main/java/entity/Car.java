@@ -1,53 +1,44 @@
 package entity;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@DatabaseTable(tableName = "car")
-@Entity
-@Table(name="place")
+@Entity(name="car")
+@Table
 public class Car {
 
-    @DatabaseField(generatedId = true)
     @Id
     @GenericGenerator(name="increment", strategy = "increment")
     @GeneratedValue(generator = "increment")
     private long idCar;
 
-    @DatabaseField()
-    @Column(name = "numbercar",nullable = false, unique = false, length = 20)
+    @Column(nullable = false, length = 20)
     @Basic
     private int numberCar=3300000;
 
-    @DatabaseField()
-    @Column(name = "typecar",nullable = false, unique = false, length = 20)
+    @Column(nullable = false, length = 20)
     @Basic
     private String typeCar; //Platzkart, Cupe, SV
 
-    @DatabaseField()
-    @Column(name = "numberseats",nullable = false, unique = false, length = 20)
+    @Column(nullable = false,  length = 20)
     @Basic
     private int numberSeats;
 
-    @DatabaseField()
-    @Column(name = "numbertrain",nullable = false, unique = false, length = 20)
+    @Column(nullable = false,  length = 20)
     @Basic
     private int numberTrain;
 
-    @DatabaseField()
-    @Column(name = "remarkcar",nullable = true, unique = false, length = 20)
+    @Column( length = 20)
     @Basic
     private String remarkCar;
 
-    @DatabaseField(persisted = false)
-    private List<Place> places = new ArrayList<Place>(54);
+    @Transient
+    private  List <Place> places = new ArrayList<>(54);
 
-    Car () {}
+    public Car () {}
 
     public Car(String typeCar, int numberTrain) {
         super();
