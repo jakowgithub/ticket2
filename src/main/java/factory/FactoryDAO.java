@@ -1,6 +1,6 @@
 package factory;
 
-import dao.PlaceDAO;
+import dao.UniversalDAO;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.Persistence;
@@ -8,23 +8,31 @@ import javax.persistence.Persistence;
 public class FactoryDAO {
     public static final FactoryDAO factory = new FactoryDAO();
     private SessionFactory sessionFactory;
-    private PlaceDAO placeDAO;
+//    private PlaceDAO placeDAO;
+    private UniversalDAO universalDAO;
 
     private FactoryDAO (){
-        sessionFactory=(SessionFactory) Persistence
-                .createEntityManagerFactory( "org.hibernate.tutorial.jpa" );
+        sessionFactory=(SessionFactory) Persistence.createEntityManagerFactory( "org.hibernate.tutorial.jpa" );
     }
     public static FactoryDAO getInstance(){
         return factory;
     }
 
-    public synchronized PlaceDAO getPlaceDAO(){
+//    public synchronized PlaceDAO getPlaceDAO(){
+//
+//        if(placeDAO!=null) {return placeDAO;}
+//
+//        placeDAO = new PlaceDAO (sessionFactory);
+//
+//        return placeDAO;
+//    }
+    public synchronized UniversalDAO  getUniversalDAO(){
 
-        if(placeDAO!=null) {return placeDAO;}
+        if(universalDAO!=null) {return universalDAO;}
 
-        placeDAO = new PlaceDAO (sessionFactory);
+        universalDAO = new UniversalDAO(sessionFactory);
 
-        return placeDAO;
+        return  universalDAO;
     }
 
 }

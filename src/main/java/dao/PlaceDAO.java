@@ -45,11 +45,4 @@ public class PlaceDAO {
         return places;
     }
 
-    public static void printPlace (Place place) {
-        System.out.println(place.getIdPlace()+" "+
-                           place.getNumberPlace()+" "+
-                           place.getTypeCarPlace()+" "+
-                           place.getIsReal()
-                );
-    }
 }

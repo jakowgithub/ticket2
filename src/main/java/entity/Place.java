@@ -52,74 +52,65 @@ public class Place {
                        int numberTrain,
                        String typeCar,
                        int pricePlace){
-
             super();
-
             this.numberPlace=numberPlace;
             this.numberCar=numberCar;
             this.numberTrain=numberTrain;
             this.typeCarPlace=typeCar;
             this.pricePlace=pricePlace;
             this.isReal=true;
-
         }
+
+    public static void printPlace (Place place) {
+        System.out.println(place.getIdPlace()+" "+
+                place.getNumberPlace()+" "+
+                place.getTypeCarPlace()+" "+
+                place.getIsReal()
+        );
+    }
 
         public long getIdPlace() {
         return idPlace;
     }
-
         public int getNumberPlace() {
             return numberPlace;
         }
-
         public void setNumberPlace(int numberPlace) {
             this.numberPlace = numberPlace;
         }
-
         public int getNumberTrain() {
             return numberTrain;
         }
-
         public void setNumberTrain(int numberTrain) {
             this.numberTrain = numberTrain;
         }
-
         public int getNumberCar() {
             return numberCar;
         }
-
         public void setNumberCar(int numberCar) {
             this.numberCar = numberCar;
         }
-
         public boolean getIsReal() {
             return isReal;
         }
-
         public void setIsReal(boolean isReal) {
             this.isReal = isReal;
         }
-
         public String getTypeCarPlace() {
             return typeCarPlace;
         }
-
         public void setTypeCarPlace(String typeCarPlace) {
             this.typeCarPlace = typeCarPlace;
         }
-
         public String getRemarkPlace() {
             return remarkPlace;
         }
-
         public void setRemarkPlace(String remarkPlace) {
             this.remarkPlace = remarkPlace;
         }
-
         public int getPricePlace() {
             return pricePlace;
         }
-
         public void setPricePlace(int pricePlace) {
             this.pricePlace = pricePlace;
         }
