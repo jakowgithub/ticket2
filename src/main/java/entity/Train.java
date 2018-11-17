@@ -46,7 +46,7 @@ public class Train {
     @Transient
         private List<Car> cars = new ArrayList<>(30);
 
-    @Column(nullable = false, length = 20)
+    @Column(length = 20)
     @Basic
         private String remarkTrain;
 

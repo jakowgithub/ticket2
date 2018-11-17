@@ -30,7 +30,7 @@ public class UniversalDAO   {
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
 
-        //get string for pql request
+        //get string for hql request
         Class clazz=t.getClass();
         String nameClass = clazz.toString().substring(clazz.toString().indexOf(".")+1);
         String nameTable = nameClass.toLowerCase();
@@ -44,4 +44,6 @@ public class UniversalDAO   {
         entityManager.close();
         return classes;
     }
+
+
 }

@@ -21,7 +21,7 @@ public class Exit {
         List<Train> trains = new ArrayList<>();
 
         //create 5 train and 5 route
-      for (int i=1; i<6; i++){
+      for (int i=1; i<4; i++){
 
           if (i<4) {Route route = new Route("Route"+i,
                                            "Station"+i,
@@ -52,7 +52,7 @@ public class Exit {
 
           trains.add(train);
 
-          universalDAO.insertClass(train);
+         universalDAO.insertClass(train);
 
           train.getCars().forEach(car -> { universalDAO.insertClass(car);
 
@@ -60,26 +60,6 @@ public class Exit {
           });
 
       }
-
-//        List<Place> places = new ArrayList<>();
-//
-//        for (int i=1; i<6; i++){
-//
-//            Place place = new Place();
-//            place.setNumberPlace(i);
-//            place.setNumberCar(7);
-//            place.setNumberTrain(12);
-//            place.setPricePlace(10*i);
-//            place.setIsReal(true);
-//            place.setTypeCarPlace("Platzkart");
-//            place.setRemarkPlace("remark"+i);
-//            places.add(place);
-//
-//            universalDAO.insertClass(place);
-//        }
-
-//        List<Place> placesPull = universalDAO.getAll(places.get(1));
-
         List<Place> placesPull = universalDAO.getAll(trains.get(0).getCars().get(0).getPlaces().get(0));
         placesPull.forEach(Place::printPlace);
     }

@@ -37,7 +37,7 @@ public class Place {
         @Basic
         private String typeCarPlace;
 
-        @Column(length = 40)
+        @Column(length = 20)
         @Basic
         private String remarkPlace;
 
