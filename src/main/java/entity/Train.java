@@ -70,7 +70,6 @@ public class Train {
             this.route = route;
             this.idRouteTrain=route.getIdRoute();
 
-            numberTrain++;
 
             for (int i=1; i<=carePlatzkart; i++) {
                 Car car = new  Car ("Platzkart", numberTrain);

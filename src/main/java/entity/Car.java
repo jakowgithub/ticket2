@@ -17,7 +17,7 @@ public class Car {
 
     @Column(nullable = false, length = 20)
     @Basic
-    private int numberCar = 3300000;
+    private int numberCar;
 
     @Column(nullable = false, length = 20)
     @Basic
@@ -42,15 +42,12 @@ public class Car {
     @Transient
     private  List <Place> places = new ArrayList<>(54);
 
-
-
     public Car () {}
 
     public Car(String typeCar, int numberTrain) {
         super();
         this.typeCar = typeCar;
         this.numberTrain = numberTrain;
-
         switch (this.typeCar) {
 
             case "Platzkart": volumeSeats = 54; pricePlace=1; break;
@@ -58,7 +55,7 @@ public class Car {
             case "SV":        volumeSeats = 18; pricePlace=4; break;
             default:          volumeSeats = 54; pricePlace=1; break;
         }
-        numberCar++;
+
 
         for (int i=1; i<=volumeSeats; i++) {
             Place place = new Place (i, numberCar, numberTrain, typeCar, pricePlace);
