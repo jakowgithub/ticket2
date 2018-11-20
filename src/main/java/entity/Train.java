@@ -50,6 +50,9 @@ public class Train {
     @Basic
         private String remarkTrain;
 
+    @Transient
+    private int maxNumberCar;
+
         public Train(){}
 
         public Train(
@@ -58,7 +61,8 @@ public class Train {
                 int carePlatzkart,
                 int careCupe,
                 int careSV,
-                Route route) {
+                Route route,
+                int maxNumberCar) {
 
             super();
 
@@ -69,18 +73,22 @@ public class Train {
             this.careSV = careSV;
             this.route = route;
             this.idRouteTrain=route.getIdRoute();
-
+            this.maxNumberCar = maxNumberCar;
 
             for (int i=1; i<=carePlatzkart; i++) {
-                Car car = new  Car ("Platzkart", numberTrain);
+                Car car = new  Car ("Platzkart", numberTrain, maxNumberCar);
+                maxNumberCar++;
                 cars.add(car);
             }
             for (int i=1; i<=careCupe; i++) {
-                Car car = new  Car ("Cupe", numberTrain);
+                Car car = new  Car ("Cupe", numberTrain, maxNumberCar);
+                maxNumberCar++;
                 cars.add(car);
+
             }
             for (int i=1; i<=careSV; i++) {
-                Car car = new  Car ("SV", numberTrain);
+                Car car = new  Car ("SV", numberTrain, maxNumberCar);
+                maxNumberCar++;
                 cars.add(car);
             }
 }
@@ -105,4 +113,7 @@ public class Train {
     public void setCars(List<Car> cars) { this.cars = cars; }
     public String getRemarkTrain() { return remarkTrain; }
     public void setRemarkTrain(String remarkTrain) { this.remarkTrain = remarkTrain; }
+    public int getMaxNumberCar() {return maxNumberCar; }
+    public void setMaxNumberCar(int maxNumberCar) { this.maxNumberCar = maxNumberCar; }
+
 }

@@ -3,10 +3,14 @@ package dao;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
-import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class UniversalDAO   {
 
@@ -64,31 +68,32 @@ public class UniversalDAO   {
         entityManager.close();
     }
 
-    //  return HashSet<>() classes in current package Class.out.production.classes.entity
-    //  with  annotation @Entity or @Table
-    public  <T> Set<Class<?>> getClassesInPackage () {
+    //  delete all data from table, which mapped out
+    //  class with  annotation @Entity and/or @Table
+    public  void clearAllTables (){
 
-// https://github.com/ronmamo/reflections
         Set<Class<?>> classes = new HashSet<>();
+        Path startDir = Paths.get(System.getProperty("user.dir"));
 
-        String directoryString = "/"+
-                                 System.getProperty("user.dir") .replace("\\","/")+
-                                 "/out/production/classes/entity";
+        try (Stream <Path> pathes = Files.find(	startDir, Integer.MAX_VALUE,
+                (p, a) -> (a.isRegularFile()) &&
+                          (p.toString().substring (p.toString().lastIndexOf(System.getProperty("file.separator"))+1)
+                            .endsWith("class")))) {
 
-        File directory = new File(directoryString);
+            // first 100 are processed
+            pathes.limit(100).forEach( file->{
+                //split() don`t work
+                String nameFileTMP1 = file.toString().substring(0, file.toString().length()-6);
+                String nameFileNeeded = nameFileTMP1.substring(nameFileTMP1.lastIndexOf("\\")+1);
+                String nameFileTMP2 = nameFileTMP1.substring(0, nameFileTMP1.length()-nameFileNeeded.length()-1);
+                String nameFolder = nameFileTMP2.substring(nameFileTMP2.lastIndexOf("\\")+1);
+                String nameFile = nameFolder + "." + nameFileNeeded;
 
-        if (directory.exists()) {
-// Get the list of the files contained in the package
-            String[] files = directory.list();
-            for (String fileName : files) {
-// We are only interested in .class files
-                if (fileName.endsWith(".class")) {
-// Remove the .class extension
-                    fileName = fileName.substring(0, fileName.length() - 6);
-                    try {classes.add(Class.forName("entity."+fileName));}
-                    catch (ClassNotFoundException e) {System.out.println("entity." + fileName + " does not appear to be a valid class.");}
-                }}}
-        else {System.out.println(directoryString + " does not appear to exist as a valid package on the file system.");}
+                try { classes.add(Class.forName(nameFile)); }
+
+                catch (ClassNotFoundException e) {System.out.println( nameFile + " does not appear to be a valid class.");}
+            });
+            } catch (IOException ioe){System.out.println("IOException"); ioe.printStackTrace();}
 
         Set<Class<?>> classesAnnotated = new HashSet<>();
 
@@ -98,15 +103,30 @@ public class UniversalDAO   {
                 String anottationName0 = clazz.getAnnotations()[0].toString();
                 String anottationName1 = clazz.getAnnotations()[1].toString();
 
-                if (!clazz.isInterface()                &&
-                    !clazz.isAnnotation()               &&
-                    !clazz.isEnum()                     &&
-                    (anottationName0.contains("Entity") ||
-                    (anottationName1.contains("Table")))) {
+                if (!clazz.isInterface()                    &&
+                        !clazz.isAnnotation()               &&
+                        !clazz.isEnum()                     &&
+                        (anottationName0.contains("Entity") ||
+                        (anottationName1.contains("Table")))) {
 
                     classesAnnotated.add(clazz);
                 } } }
-        return classesAnnotated;
+
+        EntityManager entityManager = sessionFactory.createEntityManager();
+
+        for(Class<?> clazz : classesAnnotated) {
+
+            entityManager.getTransaction().begin();
+            //get string for hql request
+            String nameClass = clazz.toString().substring(clazz.toString().indexOf(".") + 1);
+            String nameTable = nameClass.toLowerCase();
+
+            String sqlRequest = "delete from " + nameTable;
+            entityManager.createQuery(sqlRequest).executeUpdate();
+            entityManager.getTransaction().commit();
+        }
+        entityManager.close();
     }
 
 }
+

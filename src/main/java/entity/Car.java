@@ -42,18 +42,42 @@ public class Car {
     @Transient
     private  List <Place> places = new ArrayList<>(54);
 
+    @Transient
+    private  int maxNumberCar;
+
+
     public Car () {}
 
-    public Car(String typeCar, int numberTrain) {
+    public Car(String typeCar, int numberTrain, int maxNumberCar) {
         super();
         this.typeCar = typeCar;
         this.numberTrain = numberTrain;
+        this.maxNumberCar = maxNumberCar;
+
+        maxNumberCar++;
+
         switch (this.typeCar) {
 
-            case "Platzkart": volumeSeats = 54; pricePlace=1; break;
-            case "Cupe":      volumeSeats = 36; pricePlace=2; break;
-            case "SV":        volumeSeats = 18; pricePlace=4; break;
-            default:          volumeSeats = 54; pricePlace=1; break;
+            case "Platzkart":
+                volumeSeats = 54;
+                pricePlace=1;
+                numberCar = maxNumberCar+20000;
+                break;
+            case "Cupe":
+                volumeSeats = 36;
+                pricePlace=2;
+                numberCar = maxNumberCar+10000;
+                break;
+            case "SV":
+                volumeSeats = 18;
+                pricePlace=4;
+                numberCar = maxNumberCar;
+                break;
+            default:
+                volumeSeats = 54;
+                pricePlace=1;
+                numberCar = maxNumberCar+20000;
+                break;
         }
 
 
@@ -66,9 +90,7 @@ public class Car {
     public long getIdCar() {
         return idCar;
     }
-//    public void setIdCar(int idCar) {
-//    this.idCar = idCar;
-//    }
+
     public int getNumberCar() {
         return numberCar;
     }
