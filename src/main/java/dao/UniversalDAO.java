@@ -25,7 +25,7 @@ public class UniversalDAO   {
         entityManager.close();
     }
 
-    public <T> void updatePlace(T t){
+    public <T> void updateClass(T t){
         EntityManager entityManager =sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         entityManager.merge(t);
@@ -42,10 +42,10 @@ public class UniversalDAO   {
         String nameClass = clazz.toString().substring(clazz.toString().indexOf(".")+1);
         String nameTable = nameClass.toLowerCase();
         String idTable = "id"+nameClass;
-        String sqlRequest = "select t from "+nameTable+" t where t."+idTable+"<1000000";
+        String sqlRequest = "select t from "+nameTable+" t where t."+idTable+"<10000";
 
         //select all row with id<1000000
-        List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz).setMaxResults(1000000).getResultList();
+        List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz).setMaxResults(10000).getResultList();
 
         entityManager.close();
         return classes;

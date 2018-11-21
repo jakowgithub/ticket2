@@ -31,17 +31,14 @@ public class Route {
         private String station3;
 
     @Column(nullable = false)
-   // @Temporal(TemporalType.TIMESTAMP)
         private LocalDateTime arrivalStation1;
         //LocalDateTime dateTime=LocalDateTime.now();
         //LocalDateTime specificDate = LocalDateTime.of(2014, Month.JANUARY, 1, 10, 10, 30);
 
     @Column(nullable = false)
-   // @Temporal(TemporalType.TIMESTAMP)
         private LocalDateTime arrivalStation2;
 
     @Column(nullable = false)
-    //@Temporal(TemporalType.TIMESTAMP)
         private LocalDateTime arrivalStation3;
 
     @Column()
@@ -169,9 +166,7 @@ public class Route {
         public String getFareStationString() {
         return fareStationString;
     }
-        public void setFareStationString(String nameRoute) {
-        this.fareStationString = fareStationString;
-    }
+        public void setFareStationString(String fareStationString) { this.fareStationString = fareStationString; }
         public Train getTrain() {
         return train;
     }

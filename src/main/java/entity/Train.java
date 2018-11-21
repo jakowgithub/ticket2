@@ -35,7 +35,7 @@ public class Train {
     @Basic
         private int careSV;
 
-    //@OneToOne (mappedBy = "train", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToOne (mappedBy = "train", orphanRemoval = true, cascade = CascadeType.ALL)
     @Transient
         private Route route;
 
