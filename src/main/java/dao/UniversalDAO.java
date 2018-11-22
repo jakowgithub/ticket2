@@ -1,5 +1,6 @@
 package dao;
 
+import entity.Route;
 import org.hibernate.SessionFactory;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +35,7 @@ public class UniversalDAO   {
         entityManager.close();
     }
 
-    public <T> List<T> getAll(T t){
+    public <T> List <T> getAll(T t){
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
 
@@ -42,16 +44,16 @@ public class UniversalDAO   {
         String nameClass = clazz.toString().substring(clazz.toString().indexOf(".")+1);
         String nameTable = nameClass.toLowerCase();
         String idTable = "id"+nameClass;
-        String sqlRequest = "select t from "+nameTable+" t where t."+idTable+"<10000";
+        String sqlRequest = "select t from " + nameTable + " t where t." +idTable + "<10000";
 
-        //select all row with id<1000000
+        //select all row with id<10000
         List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz).setMaxResults(10000).getResultList();
 
         entityManager.close();
         return classes;
     }
 
-    public  <T> void remove(T t){
+    public  <T> void removeOneTable(T t){
         EntityManager entityManager = sessionFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
@@ -68,8 +70,8 @@ public class UniversalDAO   {
         entityManager.close();
     }
 
-    //  delete all data from table, which mapped out
-    //  class with  annotation @Entity and/or @Table
+    // in project delete all data from firs 100 table, which mapped out class
+    //  with  annotation @Entity and/or @Table
     public  void clearAllTables (){
 
         Set<Class<?>> classes = new HashSet<>();
@@ -103,11 +105,11 @@ public class UniversalDAO   {
                 String anottationName0 = clazz.getAnnotations()[0].toString();
                 String anottationName1 = clazz.getAnnotations()[1].toString();
 
-                if (!clazz.isInterface()                    &&
-                        !clazz.isAnnotation()               &&
-                        !clazz.isEnum()                     &&
-                        (anottationName0.contains("Entity") ||
-                        (anottationName1.contains("Table")))) {
+                if (!clazz.isInterface()                &&
+                    !clazz.isAnnotation()               &&
+                    !clazz.isEnum()                     &&
+                   (anottationName0.contains("Entity")  ||
+                   (anottationName1.contains("Table")))) {
 
                     classesAnnotated.add(clazz);
                 } } }
@@ -116,16 +118,48 @@ public class UniversalDAO   {
 
         for(Class<?> clazz : classesAnnotated) {
 
-            entityManager.getTransaction().begin();
+            try { //if class annotated @Entity and @Table but absent table in database
+
+           entityManager.getTransaction().begin();
             //get string for hql request
-            String nameClass = clazz.toString().substring(clazz.toString().indexOf(".") + 1);
-            String nameTable = nameClass.toLowerCase();
+            String nameTable = clazz.toString()
+                                    .substring(clazz.toString().indexOf(".") + 1)
+                                    .toLowerCase();
 
             String sqlRequest = "delete from " + nameTable;
-            entityManager.createQuery(sqlRequest).executeUpdate();
-            entityManager.getTransaction().commit();
+
+               entityManager.createQuery(sqlRequest).executeUpdate();
+               entityManager.getTransaction().commit(); }
+           catch (IllegalArgumentException iae) {
+                System.out.println("class annotated @Entity and @Table, but absent table in database, IllegalArgumentException "+iae);
+            }
+           catch (IllegalStateException ise)  {
+                System.out.println("class annotated @Entity and @Table, but absent table in database, IllegalStateException "+ise);
+            }
+
         }
         entityManager.close();
+    }
+    public  List <Route> getRoute (String startStation){
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        //select first 100 row
+        List <Route> routes1 =  entityManager.createQuery("select r from route r where r.station1 =:startstation", Route.class)
+                                             .setParameter("startstation", startStation)
+                                             .setMaxResults(100)
+                                             .getResultList();
+        List <Route> routes2 = entityManager.createQuery("select r from route r where r.station2 =:startstation", Route.class)
+                                            .setParameter("startstation", startStation)
+                                            .setMaxResults(100)
+                                            .getResultList();
+
+        ArrayList <Route> routes = new ArrayList <> ();
+        routes.add((Route) routes1);
+        routes.add((Route) routes2);
+
+        entityManager.close();
+
+        return routes;
     }
 
 }
