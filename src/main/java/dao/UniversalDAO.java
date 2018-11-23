@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +52,7 @@ public class UniversalDAO   {
         return classes;
     }
 
-    public  <T> void removeOneTable(T t){
+    public  <T> void clearOneTable(T t){
         EntityManager entityManager = sessionFactory.createEntityManager();
 
         entityManager.getTransaction().begin();
@@ -140,27 +139,52 @@ public class UniversalDAO   {
         }
         entityManager.close();
     }
-    public  List <Route> getRoute (String startStation){
+    public  List <Route> getRouteStartStation (String startStation){
         EntityManager entityManager = sessionFactory.createEntityManager();
         entityManager.getTransaction().begin();
         //select first 100 row
-        List <Route> routes1 =  entityManager.createQuery("select r from route r where r.station1 =:startstation", Route.class)
-                                             .setParameter("startstation", startStation)
+        List <Route> routes =  entityManager.createQuery("select r from route r where r.station1 =:station or r.station2 =:station", Route.class)
+                                             .setParameter("station", startStation)
                                              .setMaxResults(100)
                                              .getResultList();
-        List <Route> routes2 = entityManager.createQuery("select r from route r where r.station2 =:startstation", Route.class)
-                                            .setParameter("startstation", startStation)
-                                            .setMaxResults(100)
-                                            .getResultList();
-
-        ArrayList <Route> routes = new ArrayList <> ();
-        routes.add((Route) routes1);
-        routes.add((Route) routes2);
-
         entityManager.close();
 
         return routes;
     }
 
+    public  List <Route> getRouteTerminalStation (String terminalStation){
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        //select first 100 row
+        List <Route> routes =  entityManager.createQuery("select r from route r where r.station2 =:station or r.station3 =:station", Route.class)
+                .setParameter("station", terminalStation)
+                .setMaxResults(100)
+                .getResultList();
+        entityManager.close();
+
+        return routes;
+    }
+    public  List <Route> getRouteStartTerminalStation (String startStation, String terminalStation){
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        //select first 100 row
+        List <Route> routes =  entityManager.createQuery(
+                           "select r " +
+                              "from route r " +
+                              "where (r.station1 =:start and r.station2 =:terminal) or " +
+                                    "(r.station1 =:start and r.station3 =:terminal) or " +
+                                    "(r.station2 =:start and r.station3 =:terminal)",
+                               Route.class
+        )
+                .setParameter("start", startStation)
+                .setParameter("terminal",terminalStation)
+                .setMaxResults(100)
+                .getResultList();
+        entityManager.close();
+
+        return routes;
+    }
 }
+
+
 

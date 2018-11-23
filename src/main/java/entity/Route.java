@@ -173,4 +173,14 @@ public class Route {
         public void setTrain(Train train) {
         this.train = train;
     }
+
+    @Override
+    public String toString() {
+
+        return "NameRoute=" + this.getNameRoute() +
+               " Station1=" + this.getStation1()+
+               " Station2=" + this.getStation2()+
+               " Station3=" + this.getStation3()+
+               " Number Train=" + this.getNumberTrainRoute();
     }
+}

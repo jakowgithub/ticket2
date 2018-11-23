@@ -16,6 +16,8 @@ public class CreateDB {
     public static int getMaxNumberCar () { return maxNumberCar;}
     public static void setMaxNumberCar (int maxNC){maxNumberCar = maxNC;}
 
+    public CreateDB() {}
+
     public static void createDataBase (){
 
         UniversalDAO universalDAO = FactoryDAO.getInstance().getUniversalDAO();
@@ -72,7 +74,9 @@ public class CreateDB {
 
         }
         List<Place> placesPull = universalDAO.getAll(trains.get(0).getCars().get(0).getPlaces().get(0));
-
         placesPull.forEach(Place::printPlace);
+
+        List<Route> routesPull = universalDAO.getRouteStartTerminalStation("Station2", "Station3");
+        routesPull.forEach(System.out::println);
     }
 }
