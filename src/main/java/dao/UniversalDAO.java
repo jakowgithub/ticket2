@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,8 @@ public class UniversalDAO   {
 
     private SessionFactory sessionFactory;
     public UniversalDAO (SessionFactory sessionFactory){ this.sessionFactory = sessionFactory; }
+
+    public SessionFactory getSessionFactory () {return sessionFactory;}
 
     public <T> void  insertClass  (T t){
         EntityManager entityManager =sessionFactory.createEntityManager();
@@ -46,7 +49,9 @@ public class UniversalDAO   {
         String sqlRequest = "select t from " + nameTable + " t where t." +idTable + "<10000";
 
         //select all row with id<10000
-        List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz).setMaxResults(10000).getResultList();
+        List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz)
+                                                   .setMaxResults(10000)
+                                                   .getResultList();
 
         entityManager.close();
         return classes;
@@ -90,9 +95,9 @@ public class UniversalDAO   {
                 String nameFolder = nameFileTMP2.substring(nameFileTMP2.lastIndexOf("\\")+1);
                 String nameFile = nameFolder + "." + nameFileNeeded;
 
-                try { classes.add(Class.forName(nameFile)); }
+                try { classes.add(Class.forName(nameFile));
 
-                catch (ClassNotFoundException e) {System.out.println( nameFile + " does not appear to be a valid class.");}
+                } catch (ClassNotFoundException e) {System.out.println( nameFile + " does not appear to be a valid class.");}
             });
             } catch (IOException ioe){System.out.println("IOException"); ioe.printStackTrace();}
 
@@ -117,7 +122,8 @@ public class UniversalDAO   {
 
         for(Class<?> clazz : classesAnnotated) {
 
-            try { //if class annotated @Entity and @Table but absent table in database
+            //try - if class annotated @Entity and @Table but absent table in database
+            try {
 
            entityManager.getTransaction().begin();
             //get string for hql request
@@ -170,11 +176,11 @@ public class UniversalDAO   {
         //select first 100 row
         List <Route> routes =  entityManager.createQuery(
                            "select r " +
-                              "from route r " +
-                              "where (r.station1 =:start and r.station2 =:terminal) or " +
-                                    "(r.station1 =:start and r.station3 =:terminal) or " +
-                                    "(r.station2 =:start and r.station3 =:terminal)",
-                               Route.class
+                           "from route r " +
+                           "where (r.station1 =:start and r.station2 =:terminal) or " +
+                                 "(r.station1 =:start and r.station3 =:terminal) or " +
+                                 "(r.station2 =:start and r.station3 =:terminal)",
+                                   Route.class
         )
                 .setParameter("start", startStation)
                 .setParameter("terminal",terminalStation)
@@ -184,6 +190,29 @@ public class UniversalDAO   {
 
         return routes;
     }
+    public  List <Route> getRoute_StartTerminalStationDeparture (String startStation, String terminalStation, LocalDateTime departure){
+        EntityManager entityManager = sessionFactory.createEntityManager();
+        entityManager.getTransaction().begin();
+        //select first 100 row
+        List <Route> routes =  entityManager.createQuery(
+                "select r " +
+                        "from route r " +
+                        "where ((r.station1 =:start and r.station2 =:terminal) or " +
+                               "(r.station1 =:start and r.station3 =:terminal) or " +
+                               "(r.station2 =:start and r.station3 =:terminal)) and " +
+                               "(r.arrivalStation1 <=: departure) ",
+                Route.class
+        )
+                .setParameter("start", startStation)
+                .setParameter("terminal",terminalStation)
+                .setParameter("departure",departure)
+                .setMaxResults(100)
+                .getResultList();
+        entityManager.close();
+
+        return routes;
+    }
+
 }
 
 

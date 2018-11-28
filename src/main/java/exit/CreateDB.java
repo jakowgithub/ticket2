@@ -21,6 +21,7 @@ public class CreateDB {
     public static void createDataBase (){
 
         UniversalDAO universalDAO = FactoryDAO.getInstance().getUniversalDAO();
+
         universalDAO.clearAllTables();
 
         List<Route> routes = new ArrayList<>();
@@ -78,5 +79,7 @@ public class CreateDB {
 
         List<Route> routesPull = universalDAO.getRouteStartTerminalStation("Station2", "Station3");
         routesPull.forEach(System.out::println);
+
+        universalDAO.getSessionFactory().close();
     }
 }

@@ -48,7 +48,7 @@ public class Ticket {
 
     @Column(length = 20)
     @Basic
-    private double priceTicket;
+    private int priceTicket;
 
     @Column(length = 40)
     @Basic
@@ -140,7 +140,7 @@ public class Ticket {
         return priceTicket;
     }
 
-    public void setPriceTicket(double priceTicket) {
+    public void setPriceTicket(int priceTicket) {
         this.priceTicket = priceTicket;
     }
 
