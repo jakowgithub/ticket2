@@ -1,6 +1,7 @@
 package exit;
 
 import dao.UniversalDAO;
+import entity.Car;
 import entity.Place;
 import entity.Route;
 import entity.Train;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CreateDB {
-    public static int maxNumberCar=3300000;
+    private static int maxNumberCar=3300000;
     public static int getMaxNumberCar () { return maxNumberCar;}
     public static void setMaxNumberCar (int maxNC){maxNumberCar = maxNC;}
 
@@ -27,7 +28,7 @@ public class CreateDB {
         List<Route> routes = new ArrayList<>();
         List<Train> trains = new ArrayList<>();
 
-        //create 5 train (6 Car = 3 Platzkart + 2 Cupe + 1SV) and 5 route
+        //create 5 train (6 Car = 3 Platzkart + 2 Cupe + 1 SV) and 5 route
         for (int i=1; i<6; i++){
 
             if (i<4) {Route route = new Route("Route"+i,
@@ -43,9 +44,9 @@ public class CreateDB {
                     "Station"+(i-3),
                     "Station"+(i-1),
                     "Station"+i,
-                    LocalDateTime.of(2019, Month.JANUARY, 1, 6+i, 5, 30),
-                    LocalDateTime.of(2019, Month.JANUARY, 1, 10+i, 10, 30),
-                    LocalDateTime.of(2019, Month.JANUARY, 1, 14+i, 15, 30));
+                    LocalDateTime.of(2019, Month.JANUARY, 3, 6+i, 5, 30),
+                    LocalDateTime.of(2019, Month.JANUARY, 3, 10+i, 10, 30),
+                    LocalDateTime.of(2019, Month.JANUARY, 3, 14+i, 15, 30));
                 routes.add(route);
             }
             Train train = new Train("Kyiv - Misto"+i, i,3, 2, 1, routes.get(i-1), getMaxNumberCar());
@@ -66,12 +67,10 @@ public class CreateDB {
 
             universalDAO.updateClass(routes.get(i-1));
 
-            train.getCars().forEach(car -> {
-
+            for (Car car : train.getCars()) {
                 universalDAO.insertClass(car);
-
-                car.getPlaces().forEach(place -> universalDAO.insertClass(place));
-            });
+                car.getPlaces().forEach(universalDAO::insertClass);
+            }
 
         }
         List<Place> placesPull = universalDAO.getAll(trains.get(0).getCars().get(0).getPlaces().get(0));

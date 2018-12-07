@@ -62,7 +62,8 @@ public class Route {
     @Basic
     private  String fareStationString;
 
-    @OneToOne
+    @Transient
+   // @OneToOne
     private Train train;
 
 

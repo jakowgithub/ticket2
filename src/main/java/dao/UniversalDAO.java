@@ -46,12 +46,12 @@ public class UniversalDAO   {
         String nameClass = clazz.toString().substring(clazz.toString().indexOf(".")+1);
         String nameTable = nameClass.toLowerCase();
         String idTable = "id"+nameClass;
-        String sqlRequest = "select t from " + nameTable + " t where t." +idTable + "<10000";
+        String sqlRequest = "select t from " + nameTable + " t where t." + idTable + "<10000";
 
         //select all row with id<10000
-        List <T> classes = (List <T>) entityManager.createQuery(sqlRequest, clazz)
-                                                   .setMaxResults(10000)
-                                                   .getResultList();
+        List <T> classes =  (List <T>) entityManager.createQuery(sqlRequest, clazz)
+                                                    .setMaxResults(10000)
+                                                    .getResultList();
 
         entityManager.close();
         return classes;
@@ -118,32 +118,37 @@ public class UniversalDAO   {
                     classesAnnotated.add(clazz);
                 } } }
 
-        EntityManager entityManager = sessionFactory.createEntityManager();
+       // EntityManager entityManager = sessionFactory.createEntityManager();
 
         for(Class<?> clazz : classesAnnotated) {
 
-            //try - if class annotated @Entity and @Table but absent table in database
+            EntityManager entityManager = sessionFactory.createEntityManager();
+            //if class annotated @Entity and @Table but absent table in database
             try {
+                entityManager.getTransaction().begin();
 
-           entityManager.getTransaction().begin();
-            //get string for hql request
+                //get string for hql request
             String nameTable = clazz.toString()
                                     .substring(clazz.toString().indexOf(".") + 1)
                                     .toLowerCase();
 
             String sqlRequest = "delete from " + nameTable;
 
-               entityManager.createQuery(sqlRequest).executeUpdate();
-               entityManager.getTransaction().commit(); }
-           catch (IllegalArgumentException iae) {
+            entityManager.createQuery(sqlRequest)
+                         .executeUpdate();
+
+            entityManager.getTransaction().commit();
+            }
+            catch (IllegalArgumentException iae) {
                 System.out.println("class annotated @Entity and @Table, but absent table in database, IllegalArgumentException "+iae);
             }
            catch (IllegalStateException ise)  {
                 System.out.println("class annotated @Entity and @Table, but absent table in database, IllegalStateException "+ise);
             }
-
+            finally {entityManager.close();
+            }
         }
-        entityManager.close();
+       // entityManager.close();
     }
     public  List <Route> getRouteStartStation (String startStation){
         EntityManager entityManager = sessionFactory.createEntityManager();
@@ -175,7 +180,7 @@ public class UniversalDAO   {
         entityManager.getTransaction().begin();
         //select first 100 row
         List <Route> routes =  entityManager.createQuery(
-                           "select r " +
+                        "select r " +
                            "from route r " +
                            "where (r.station1 =:start and r.station2 =:terminal) or " +
                                  "(r.station1 =:start and r.station3 =:terminal) or " +
